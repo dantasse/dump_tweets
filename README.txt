@@ -1,1 +1,1 @@
-Just trying to dump some tweets into a big json file
+Just a lil script to dump some tweets into a big csv file
