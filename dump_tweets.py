@@ -13,7 +13,7 @@ psql_conn = psycopg2.connect("dbname='tweet'")
 psycopg2.extras.register_hstore(psql_conn)
 pg_cur = psql_conn.cursor(cursor_factory=psycopg2.extras.DictCursor)
 
-pg_cur.execute("SELECT text,ST_ASGEOJSON(coordinates),user_screen_name,created_at FROM tweet_pgh;")
+pg_cur.execute("SELECT text,ST_ASGEOJSON(coordinates),user_screen_name,created_at FROM %s;" % args.table)
 
 writer = csv.writer(open(args.output_file, 'w'))
 counter = 0
@@ -33,5 +33,7 @@ for row in pg_cur:
     row.append(time)
     del row[1]
     del row[2]
-    del row[0] # ugh text is a mess.
+    text = row[0]
+    del row[0] # stick the text on the end to minimally screw things up?
+    row.append(text)
     writer.writerow(row)
